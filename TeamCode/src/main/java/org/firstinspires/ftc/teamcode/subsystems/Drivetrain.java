@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -38,17 +39,18 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+@Config
 public class Drivetrain extends MecanumDrive implements Subsystem {
     public static final double TICKS_PER_REV = 383.6;
     public static final double MAX_RPM = 435;
 
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0, 32767 / (MAX_RPM / 60 * TICKS_PER_REV));
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(15, 2, 6, 32767 / (MAX_RPM / 60 * TICKS_PER_REV));
 
     public static double WHEEL_RADIUS = 1.96850394; // in
     public static double GEAR_RATIO = 0.75; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 15; // in
+    public static double TRACK_WIDTH = 13.69; // in
 
-    public static double kV = 1.0 / MAX_RPM * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
+    public static double kV = 1.0 / (MAX_RPM * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0);
     public static double kA = 0;
     public static double kStatic = 0;
 
@@ -57,8 +59,8 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0.1, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.5, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -159,6 +161,8 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        setLocalizer(new OdometryWheels(hardwareMap));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
