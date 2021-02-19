@@ -34,6 +34,8 @@ public class ShooterTest extends LinearOpMode {
             flap.setPosition(flapPosition);
             pusher.setPosition(pusherPosition);
             dashTelemetry.addData("Shooter Velocity", shooter.getVelocity(AngleUnit.RADIANS));
+            double targetVelocity = 5.340707505 * shooterPower;
+            dashTelemetry.addData("Shooter Velocity %Error", Math.abs(targetVelocity - shooter.getVelocity(AngleUnit.RADIANS))/targetVelocity);
             dashTelemetry.update();
         }
     }

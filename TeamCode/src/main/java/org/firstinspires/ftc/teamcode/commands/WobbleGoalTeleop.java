@@ -4,34 +4,26 @@ import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.WobbleGoalGrabber;
+import org.firstinspires.ftc.teamcode.util.StickyGamepad;
 
 public class WobbleGoalTeleop implements Command {
     private WobbleGoalGrabber wobbleGoalGrabber;
-    private Gamepad gamepad;
+    private StickyGamepad gamepad;
 
     public WobbleGoalTeleop (WobbleGoalGrabber wobbleGoalGrabber, Gamepad gamepad) {
         this.wobbleGoalGrabber = wobbleGoalGrabber;
-        this.gamepad = gamepad;
+        this.gamepad = new StickyGamepad(gamepad);
     }
 
     @Override
     public void start() {
-        wobbleGoalGrabber.closeGrabber();
-        wobbleGoalGrabber.retractArm();
+
     }
 
     @Override
     public void periodic() {
-        if (gamepad.a) {
-            wobbleGoalGrabber.closeGrabber();
-        } else if (gamepad.b) {
-            wobbleGoalGrabber.openGrabber();
-        }
-        if (gamepad.x) {
-            wobbleGoalGrabber.retractArm();
-        } else if (gamepad.y) {
-            wobbleGoalGrabber.extendArm();
-        }
+        gamepad.update();
+        if (gamepad.x) wobbleGoalGrabber.cycle();
     }
 
     @Override

@@ -55,11 +55,11 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     public static double kStatic = 0;
 
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            30.0, 30.0, 0.0,
+            40.0, 30.0, 100.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0.1, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0.5, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.5, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
