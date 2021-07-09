@@ -64,7 +64,7 @@ public class AutoCamera implements Subsystem {
 
         if (tfod != null) {
             tfod.activate();
-            tfod.setZoom(1.2, 4.0/3.0);
+            tfod.setZoom(1.5, 4.0/3.0);
             //tfod.setClippingMargins(0,275,150,425);
         }
 

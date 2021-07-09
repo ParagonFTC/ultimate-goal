@@ -17,7 +17,7 @@ public class ShooterAutomationTest extends LinearOpMode implements DogeOpMode {
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
         Drivetrain drivetrain = new Drivetrain(hardwareMap);
-        Camera camera = new Camera(hardwareMap);
+        Camera camera = new Camera(hardwareMap, drivetrain);
         Shooter shooter = new Shooter(hardwareMap);
 
         commander.registerSubsystem(drivetrain);

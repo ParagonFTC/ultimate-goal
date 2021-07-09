@@ -12,12 +12,13 @@ public class WobbleGoalGrabber implements Subsystem {
     private HardwareMap hardwareMap;
     private NanoClock clock;
 
-    public static final double GRABBER_OPEN_POSITION = 0.15;
-    public static final double GRABBER_CLOSE_POSITION = 0.4;
+    public static double GRABBER_OPEN_POSITION = 0.4; // 0.15
+    public static double GRABBER_CLOSE_POSITION = 0.8; // 0.4
 
-    public static final double WRIST_GRAB_POSITION = 0.45;
-    public static final double WRIST_TRANSPORT_POSITION = 0.7;
-    public static final double WRIST_INIT_POSITION = 1;
+    public static double WRIST_GRAB_POSITION = 0.45;
+    public static double WRIST_TRANSPORT_POSITION = 0.79;
+    public static double WRIST_INIT_POSITION = 0.9;
+    public static double WRIST_CATCH_POSITION = 0.4;
 
     private double wristPosition = WRIST_INIT_POSITION;
     private double grabberPosition = GRABBER_CLOSE_POSITION;
@@ -30,7 +31,9 @@ public class WobbleGoalGrabber implements Subsystem {
         GRAB,
         GRAB_TRANSPORT,
         TRANSPORT,
-        DROP
+        AUTO_DROP,
+        DROP,
+        RING
     }
 
     private State state = State.INIT;
@@ -77,6 +80,7 @@ public class WobbleGoalGrabber implements Subsystem {
         switch (state) {
             case INIT:
             case DROP:
+            case RING:
                 state = State.GRAB;
                 break;
             case GRAB:
@@ -92,6 +96,27 @@ public class WobbleGoalGrabber implements Subsystem {
         }
     }
 
+    public void ringCycle() {
+        if (state == State.RING) {
+            state = State.INIT;
+        } else {
+            state = State.RING;
+        }
+    }
+
+    public void autoCycle() {
+        switch (state) {
+            case INIT:
+            case TRANSPORT:
+                state = State.AUTO_DROP;
+                initialTimestamp = clock.seconds();
+                break;
+            case AUTO_DROP:
+                state = State.GRAB;
+                break;
+        }
+    }
+
     public void setState(State state) {
         this.state = state;
     }
@@ -99,27 +124,35 @@ public class WobbleGoalGrabber implements Subsystem {
     @Override
     public void periodic() {
         switch (state) {
-                case INIT:
-                    wristPosition = WRIST_INIT_POSITION;
-                    grabberPosition = GRABBER_CLOSE_POSITION;
+            case INIT:
+                wristPosition = WRIST_INIT_POSITION;
+                grabberPosition = GRABBER_CLOSE_POSITION;
+                break;
+            case GRAB:
+                wristPosition = WRIST_GRAB_POSITION;
+                grabberPosition = GRABBER_OPEN_POSITION;
+                break;
+            case GRAB_TRANSPORT:
+                wristPosition = WRIST_GRAB_POSITION;
+                grabberPosition = GRABBER_CLOSE_POSITION;
+                if (clock.seconds() - initialTimestamp > TRANSITION_DELAY) cycle();
+                break;
+            case TRANSPORT:
+                wristPosition = WRIST_TRANSPORT_POSITION;
+                grabberPosition = GRABBER_CLOSE_POSITION;
                     break;
-                case GRAB:
-                    wristPosition = WRIST_GRAB_POSITION;
-                    grabberPosition = GRABBER_OPEN_POSITION;
-                    break;
-                case GRAB_TRANSPORT:
-                    wristPosition = WRIST_GRAB_POSITION;
-                    grabberPosition = GRABBER_CLOSE_POSITION;
-                    if (clock.seconds() - initialTimestamp > TRANSITION_DELAY) cycle();
-                    break;
-                case TRANSPORT:
-                    wristPosition = WRIST_TRANSPORT_POSITION;
-                    grabberPosition = GRABBER_CLOSE_POSITION;
-                    break;
-                case DROP:
-                    wristPosition = WRIST_TRANSPORT_POSITION;
-                    grabberPosition = GRABBER_OPEN_POSITION;
-                    break;
+            case DROP:
+                wristPosition = WRIST_TRANSPORT_POSITION;
+                grabberPosition = GRABBER_OPEN_POSITION;
+                break;
+            case RING:
+                wristPosition = WRIST_CATCH_POSITION;
+                break;
+            case AUTO_DROP:
+                wristPosition = WRIST_GRAB_POSITION;
+                if (clock.seconds() - initialTimestamp > 0.5) grabberPosition = GRABBER_OPEN_POSITION;
+                else grabberPosition = GRABBER_CLOSE_POSITION;
+                break;
         }
         wristLeft.setPosition(wristPosition);
         wristRight.setPosition(wristPosition);

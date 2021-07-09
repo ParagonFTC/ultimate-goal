@@ -22,6 +22,14 @@ public class IntakeTeleop implements Command {
     @Override
     public void periodic() {
         intake.setPower(-gamepad.right_trigger);
+        if (gamepad.right_bumper) {
+            intake.setPower(1);
+        }
+        if (gamepad.left_trigger >= 0.5) {
+            intake.halfDeploy();
+        } else {
+            intake.deploy();
+        }
     }
 
     @Override

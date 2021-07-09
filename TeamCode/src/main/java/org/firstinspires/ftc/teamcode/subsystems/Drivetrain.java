@@ -59,8 +59,8 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0.5, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.5, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0.05, 0.3);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.5, 0.01, 0.1);
 
     public static double LATERAL_MULTIPLIER = 1;
 

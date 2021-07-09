@@ -18,7 +18,7 @@ public class OdometryWheels extends ThreeTrackingWheelLocalizer {
     public static double WHEEL_RADIUS = 1.18110236; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 13.3419583289; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 13.3781; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 0.713582677; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;

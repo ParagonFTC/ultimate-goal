@@ -24,6 +24,7 @@ public class WobbleGoalTeleop implements Command {
     public void periodic() {
         gamepad.update();
         if (gamepad.x) wobbleGoalGrabber.cycle();
+        if (gamepad.y) wobbleGoalGrabber.ringCycle();
     }
 
     @Override

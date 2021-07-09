@@ -1,20 +1,29 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.disnodeteam.dogecommander.DogeCommander;
+import com.disnodeteam.dogecommander.DogeOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.util.UltimateGoalLocalizationUtil;
 
 @TeleOp(name = "Localization Test", group = "test")
-public class LocalizationTest extends LinearOpMode {
+public class LocalizationTest extends LinearOpMode implements DogeOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        DogeCommander commander = new DogeCommander(this);
         Drivetrain drivetrain = new Drivetrain(hardwareMap);
-        drivetrain.initHardware();
+        Camera camera = new Camera(hardwareMap, drivetrain);
 
-        drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        commander.registerSubsystem(drivetrain);
+        commander.registerSubsystem(camera);
+        commander.init();
+
+        drivetrain.setPoseEstimate(new Pose2d(-63,33,0));
 
         waitForStart();
 
@@ -25,13 +34,12 @@ public class LocalizationTest extends LinearOpMode {
                     -gamepad1.right_stick_x
             ));
 
-            drivetrain.periodic();
-
-            Pose2d poseEstimate = drivetrain.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+            Pose2d drivetrainPoseEstimate = drivetrain.getPoseEstimate();
+            Pose2d cameraPoseEstimate = camera.getPoseEstimate();
+            telemetry.addData("Drivetrain Pose Estimate", drivetrainPoseEstimate);
+            if (cameraPoseEstimate != null) telemetry.addData("Camera Pose Estimate", cameraPoseEstimate);
             telemetry.update();
         }
+        commander.stop();
     }
 }

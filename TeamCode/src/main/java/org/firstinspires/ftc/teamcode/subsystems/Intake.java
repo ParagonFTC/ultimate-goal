@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake implements Subsystem {
     public static final double INTAKE_RETRACT_POSITION = 0;
     public static final double INTAKE_DEPLOY_POSITION = 0.5;
+    public static final double INTAKE_HALF_DEPLOY_POSITION = 0.25;
 
     private HardwareMap hardwareMap;
 
@@ -31,6 +32,10 @@ public class Intake implements Subsystem {
 
     public void retract() {
         intakePosition = INTAKE_RETRACT_POSITION;
+    }
+
+    public void halfDeploy() {
+        intakePosition = INTAKE_HALF_DEPLOY_POSITION;
     }
 
     @Override
